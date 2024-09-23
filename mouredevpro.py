@@ -26,20 +26,34 @@
  
 import csv,random
                 
-def cantidad_lineas():
+def cantidad_lineas_activas():
     cantidad = 0
-
-    with open ("mouredevpro.csv") as file:
+    
+    with open ("lista.csv") as file:
         datos = csv.reader(file , delimiter ="|")
     
         for dato in datos:
-            cantidad = cantidad + 1
-        return cantidad -1 
+            if dato[2] == " activo":
+                cantidad = cantidad + 1
+        return cantidad
+    
+def cantidad_lineas():
+    cantidad = 0
+    try:
+        with open ("lista.csv") as file:
+            datos = csv.reader(file , delimiter ="|")
+        
+            for dato in datos:
+                cantidad = cantidad + 1
+            return cantidad -1
+    except:
+        print ("El archibo lista.csv no se encuentra en el directorio o esta dañado ")
+        return 0  
     
 def ganador(posicion):
     num = 0
 
-    with open ("mouredevpro.csv") as file:
+    with open ("lista.csv") as file:
         lineas = csv.reader(file , delimiter ="|")
     
         for linea in lineas:
@@ -49,30 +63,34 @@ def ganador(posicion):
         
         return ganador     
     
-cantidad = cantidad_lineas()  
+cantidad = cantidad_lineas()
 
-while True:
-    posicion1 = random.randint (1,cantidad)
-    subscripcion = ganador(posicion1)
-    if subscripcion [2] == " activo":
-        break
+if cantidad != 0:
+    activos = cantidad_lineas_activas()  
 
-while True:
-    posicion2 = random.randint (1,cantidad) 
-    if not(posicion2 == posicion1):
-        descuento = ganador(posicion2)
-        if descuento [2] == " activo":
-            break
-        
-while True:
-    posicion3 = random.randint (1,cantidad) 
-    if not(posicion3 == posicion2 or posicion3 == posicion1):
-        libro = ganador (posicion3)
-        if libro [2] == " activo":
-            break 
-         
-print (f"EL GANADOR DE LA SUBSCRIPCION ES: {subscripcion[1]} . CON ID: {subscripcion[0]}.\n")
-print (f"EL GANADOR DE LA DESCUENTO ES: {descuento[1]} . CON ID: {descuento[0]}.\n")
-print (f"EL GANADOR DE LA LIBRO ES: {libro[1]} . CON ID: {libro[0]}.\n")
-           
-    
+    if activos > 2 :
+        while True:
+            posicion1 = random.randint (1,cantidad)
+            subscripcion = ganador(posicion1)
+            if subscripcion [2] == " activo":
+                break
+
+        while True:
+            posicion2 = random.randint (1,cantidad) 
+            if not(posicion2 == posicion1):
+                descuento = ganador(posicion2)
+                if descuento [2] == " activo":
+                    break
+                
+        while True:
+            posicion3 = random.randint (1,cantidad) 
+            if not(posicion3 == posicion2 or posicion3 == posicion1):
+                libro = ganador (posicion3)
+                if libro [2] == " activo":
+                    break 
+                
+        print (f"EL GANADOR DE LA SUBSCRIPCION ES: {subscripcion[1]} . CON ID: {subscripcion[0]}.\n")
+        print (f"EL GANADOR DE LA DESCUENTO ES:    {descuento[1]} . CON ID: {descuento[0]}.\n")
+        print (f"EL GANADOR DE LA LIBRO ES:        {libro[1]} . CON ID: {libro[0]}.\n")
+    else:
+        print ("No tienes suficientes personas activas para repartir los tres premios")
